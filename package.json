@@ -9,9 +9,8 @@
     "lint": "eslint",
     "db:push": "prisma db push",
     "db:migrate": "prisma migrate dev",
-    "db:seed": "ts-node --compiler-options '{\"module\":\"CommonJS\"}' prisma/seed.ts",
+    "db:seed": "tsx prisma/seed.ts",
     "db:studio": "prisma studio",
-    "socket": "ts-node --compiler-options '{\"module\":\"CommonJS\"}' src/server.ts",
     "postinstall": "prisma generate"
   },
   "dependencies": {
@@ -45,7 +44,6 @@
     "eslint": "^9",
     "eslint-config-next": "16.1.6",
     "tailwindcss": "^4",
-    "ts-node": "^10.9.2",
     "tsx": "^4.21.0",
     "typescript": "^5"
   }
