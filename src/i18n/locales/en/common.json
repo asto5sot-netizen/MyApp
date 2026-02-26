@@ -1,0 +1,161 @@
+{
+  "nav": {
+    "home": "Home",
+    "howItWorks": "How it works",
+    "categories": "Categories",
+    "masters": "Masters",
+    "login": "Log in",
+    "register": "Sign up",
+    "dashboard": "Dashboard",
+    "logout": "Log out",
+    "postJob": "Post a Job",
+    "findWork": "Find Work"
+  },
+  "hero": {
+    "title": "Find trusted professionals in Thailand",
+    "subtitle": "Post your job, receive proposals from verified professionals, and get the work done — in your language.",
+    "placeholder": "What service do you need?",
+    "cta": "Post a Job for Free",
+    "ctaPro": "I'm a Professional",
+    "location": "All of Thailand"
+  },
+  "categories": {
+    "title": "Popular Categories",
+    "repair": "Repair & Home",
+    "beauty": "Beauty & Care",
+    "it": "IT & Digital",
+    "education": "Education",
+    "auto": "Auto & Moto",
+    "food": "Food & Catering",
+    "health": "Health & Fitness",
+    "other": "Other Services"
+  },
+  "jobs": {
+    "post": "Post a Job",
+    "myJobs": "My Jobs",
+    "createNew": "Create New Request",
+    "title": "Job Title",
+    "description": "Description",
+    "category": "Category",
+    "budget": "Budget (THB)",
+    "budgetMin": "Min budget",
+    "budgetMax": "Max budget",
+    "location": "Location / District",
+    "city": "City",
+    "preferredDate": "Preferred Date",
+    "submit": "Post Job",
+    "proposals": "proposals",
+    "noJobs": "No active jobs yet",
+    "status": {
+      "open": "Open",
+      "in_progress": "In Progress",
+      "done": "Done",
+      "cancelled": "Cancelled"
+    }
+  },
+  "proposals": {
+    "title": "Proposals",
+    "send": "Send Proposal",
+    "message": "Your message",
+    "price": "Your price (THB)",
+    "priceType": "Price type",
+    "fixed": "Fixed price",
+    "per_hour": "Per hour",
+    "negotiable": "Negotiable",
+    "estimatedDays": "Estimated days",
+    "accept": "Accept this proposal",
+    "noProposals": "No proposals yet",
+    "status": {
+      "pending": "Pending",
+      "accepted": "Accepted",
+      "rejected": "Rejected"
+    }
+  },
+  "chat": {
+    "title": "Messages",
+    "placeholder": "Type a message...",
+    "send": "Send",
+    "showOriginal": "Show original",
+    "noConversations": "No conversations yet"
+  },
+  "auth": {
+    "login": "Log In",
+    "register": "Sign Up",
+    "email": "Email",
+    "password": "Password",
+    "name": "Full Name",
+    "phone": "Phone (optional)",
+    "asClient": "I need a service",
+    "asPro": "I'm a professional",
+    "haveAccount": "Already have an account?",
+    "noAccount": "Don't have an account?",
+    "language": "Interface language",
+    "loginBtn": "Log In",
+    "registerBtn": "Create Account"
+  },
+  "profile": {
+    "title": "My Profile",
+    "edit": "Edit Profile",
+    "bio": "About me",
+    "experience": "Experience (years)",
+    "hourlyRate": "Hourly rate (THB)",
+    "city": "City",
+    "available": "Available for new jobs",
+    "rating": "Rating",
+    "reviews": "reviews",
+    "completedJobs": "Completed jobs",
+    "verified": "Verified",
+    "categories": "My Services",
+    "photos": "Portfolio Photos",
+    "save": "Save Changes"
+  },
+  "reviews": {
+    "leave": "Leave a Review",
+    "rating": "Rating",
+    "comment": "Comment (optional)",
+    "submit": "Submit Review",
+    "noReviews": "No reviews yet"
+  },
+  "howItWorks": {
+    "step": "Step",
+    "step1Title": "Post a Job",
+    "step1Desc": "Describe what you need, set your budget and preferred dates",
+    "step2Title": "Get Proposals",
+    "step2Desc": "Professionals send you their offers with prices and messages",
+    "step3Title": "Choose & Chat",
+    "step3Desc": "Compare profiles, chat in your language, and hire the best match"
+  },
+  "stats": {
+    "freeValue": "Free",
+    "freeLabel": "For Everyone",
+    "langsValue": "3+",
+    "langsLabel": "Languages",
+    "citiesValue": "🇹🇭",
+    "citiesLabel": "All Thailand"
+  },
+  "cta": {
+    "title": "Ready to get started?",
+    "subtitle": "Join thousands of clients and professionals in Thailand"
+  },
+  "footer": {
+    "rights": "© 2026 ProService. All rights reserved.",
+    "privacy": "Privacy",
+    "terms": "Terms"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Something went wrong",
+    "back": "Back",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "confirm": "Confirm",
+    "bangkok": "Bangkok",
+    "chiangmai": "Chiang Mai",
+    "phuket": "Phuket",
+    "pattaya": "Pattaya",
+    "thb": "THB",
+    "perHour": "/hr",
+    "days": "days"
+  }
+}
