@@ -2,10 +2,10 @@
 
 import { useState, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
-import { useTranslation } from 'react-i18next'
 import Link from 'next/link'
 import Navbar from '@/components/Navbar'
 import { THAI_CITIES, REGION_LABELS } from '@/lib/cities'
+import { useLang } from '@/hooks/useLang'
 
 interface Pro {
   id: string
@@ -60,7 +60,7 @@ const regions = ['central', 'north', 'south', 'northeast'] as const
 export default function ProsPage() {
   const params = useParams()
   const router = useRouter()
-  const { i18n } = useTranslation()
+  const lang = useLang()
   const slug = params.slug as string
 
   const [category, setCategory] = useState<Category | null>(null)
@@ -69,8 +69,8 @@ export default function ProsPage() {
   const [city, setCity] = useState('')
 
   const getCatName = (cat: Category) => {
-    if (i18n.language === 'ru') return cat.name_ru
-    if (i18n.language === 'th') return cat.name_th
+    if (lang === 'ru') return cat.name_ru
+    if (lang === 'th') return cat.name_th
     return cat.name_en
   }
 
@@ -98,7 +98,7 @@ export default function ProsPage() {
       <Navbar />
       <div className="max-w-5xl mx-auto px-4 py-8">
         <button onClick={() => router.back()} className="text-blue-600 text-sm flex items-center gap-1 mb-4 hover:underline">
-          ← Назад
+          ← Back
         </button>
 
         <div className="flex items-center gap-3 mb-6">
@@ -107,7 +107,7 @@ export default function ProsPage() {
             <h1 className="text-2xl font-bold text-gray-900">
               {category ? getCatName(category) : '...'}
             </h1>
-            <p className="text-gray-500 text-sm">{pros.length} мастеров</p>
+            <p className="text-gray-500 text-sm">{pros.length} specialists</p>
           </div>
         </div>
 
@@ -118,7 +118,7 @@ export default function ProsPage() {
             onChange={e => handleCityChange(e.target.value)}
             className="border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
           >
-            <option value="">Все города</option>
+            <option value="">All cities</option>
             {regions.map(region => (
               <optgroup key={region} label={REGION_LABELS[region]}>
                 {THAI_CITIES.filter(c => c.region === region).map(c => (
@@ -138,19 +138,19 @@ export default function ProsPage() {
         ) : pros.length === 0 ? (
           <div className="text-center py-16 text-gray-400">
             <div className="text-5xl mb-4">🔍</div>
-            <p className="text-lg font-medium">Мастеров пока нет</p>
-            <p className="text-sm mt-1">Зарегистрируйтесь как исполнитель в этой категории</p>
+            <p className="text-lg font-medium">No specialists yet</p>
+            <p className="text-sm mt-1">Be the first to register as a professional in this category</p>
           </div>
         ) : (
           <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
             <table className="w-full">
               <thead className="bg-gray-50 border-b border-gray-100">
                 <tr>
-                  <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wide px-6 py-4">Мастер</th>
-                  <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wide px-4 py-4 hidden sm:table-cell">Город</th>
-                  <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wide px-4 py-4">Рейтинг</th>
-                  <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wide px-4 py-4 hidden md:table-cell">Заказов</th>
-                  <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wide px-4 py-4 hidden md:table-cell">Цена от</th>
+                  <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wide px-6 py-4">Professional</th>
+                  <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wide px-4 py-4 hidden sm:table-cell">City</th>
+                  <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wide px-4 py-4">Rating</th>
+                  <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wide px-4 py-4 hidden md:table-cell">Jobs</th>
+                  <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wide px-4 py-4 hidden md:table-cell">Price from</th>
                   <th className="px-4 py-4" />
                 </tr>
               </thead>
@@ -176,7 +176,7 @@ export default function ProsPage() {
                         <div>
                           <p className="font-semibold text-gray-900 text-sm">{pro.user.full_name}</p>
                           {pro.verification_status === 'verified' && (
-                            <span className="text-[10px] text-blue-600 font-medium">✓ Верифицирован</span>
+                            <span className="text-[10px] text-blue-600 font-medium">✓ Verified</span>
                           )}
                         </div>
                       </div>
@@ -191,13 +191,13 @@ export default function ProsPage() {
                     </td>
                     <td className="px-4 py-4 hidden md:table-cell">
                       <span className="text-sm font-semibold text-gray-800">{pro.completed_jobs}</span>
-                      <span className="text-xs text-gray-400 ml-1">выполнено</span>
+                      <span className="text-xs text-gray-400 ml-1">completed</span>
                     </td>
                     <td className="px-4 py-4 hidden md:table-cell text-sm text-gray-700">
                       {pro.categories[0]?.price_from ? (
-                        <span>от {Number(pro.categories[0].price_from).toLocaleString()} ฿</span>
+                        <span>from {Number(pro.categories[0].price_from).toLocaleString()} ฿</span>
                       ) : (
-                        <span className="text-gray-400">по договору</span>
+                        <span className="text-gray-400">by agreement</span>
                       )}
                     </td>
                     <td className="px-4 py-4">
@@ -205,7 +205,7 @@ export default function ProsPage() {
                         href={`/pro/${pro.user.id}`}
                         className="text-blue-600 text-sm font-medium hover:underline whitespace-nowrap"
                       >
-                        Профиль →
+                        Profile →
                       </Link>
                     </td>
                   </tr>

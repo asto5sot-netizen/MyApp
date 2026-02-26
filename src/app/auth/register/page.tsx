@@ -1,12 +1,13 @@
 'use client'
 
-import { useState, useEffect, useRef, Suspense } from 'react'
+import { useState, Suspense } from 'react'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useTranslation } from 'react-i18next'
 import Navbar from '@/components/Navbar'
 import { THAI_CITIES, REGION_LABELS } from '@/lib/cities'
 import { createClient } from '@/lib/supabase/client'
+import { useLang } from '@/hooks/useLang'
 
 function passwordChecks(pw: string) {
   return {
@@ -30,7 +31,8 @@ const GoogleIcon = () => (
 )
 
 function RegisterForm() {
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
+  const lang = useLang()
   const router = useRouter()
   const searchParams = useSearchParams()
   const supabase = createClient()
@@ -44,11 +46,12 @@ function RegisterForm() {
     full_name: '',
     phone: '',
     city: 'Bangkok',
-    preferred_language: i18n.language as 'en' | 'th' | 'ru',
+    preferred_language: (lang || 'en') as 'en' | 'th' | 'ru',
   })
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const [passwordFocused, setPasswordFocused] = useState(false)
+  const [emailSent, setEmailSent] = useState(false)
 
   const checks = passwordChecks(form.password)
   const passwordValid = Object.values(checks).every(Boolean)
@@ -69,21 +72,34 @@ function RegisterForm() {
     setLoading(true)
     setError('')
     try {
-      // 1. Create auth user in Supabase
+      // 1. Create auth user — pass metadata so callback can create Profile if email confirmation is required
       const { data, error: authError } = await supabase.auth.signUp({
         email: form.email.trim().toLowerCase(),
         password: form.password,
+        options: {
+          data: {
+            full_name: form.full_name,
+            role,
+            city: form.city,
+            phone: form.phone || null,
+            preferred_language: form.preferred_language,
+          },
+        },
       })
       if (authError) { setError(authError.message); return }
       if (!data.user) { setError('Registration failed. Please try again.'); return }
 
-      // 2. Create Profile record via API
+      // 2a. Email confirmation required — session is null, Profile will be created in /api/auth/callback
+      if (!data.session) {
+        setEmailSent(true)
+        return
+      }
+
+      // 2b. Email confirmation disabled — session exists, create Profile immediately
       const res = await fetch('/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          id: data.user.id,
-          email: form.email.trim().toLowerCase(),
           full_name: form.full_name,
           phone: form.phone || undefined,
           city: form.city,
@@ -93,8 +109,6 @@ function RegisterForm() {
       })
       const result = await res.json()
       if (!result.success) {
-        // Rollback auth user if profile creation fails
-        await supabase.auth.admin?.deleteUser(data.user.id).catch(() => {})
         setError(result.error || 'Profile creation failed')
         return
       }
@@ -105,6 +119,24 @@ function RegisterForm() {
     } finally {
       setLoading(false)
     }
+  }
+
+  if (emailSent) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <Navbar />
+        <div className="flex items-center justify-center min-h-[calc(100vh-64px)] px-4">
+          <div className="bg-white w-full max-w-md rounded-2xl shadow-sm border border-gray-100 p-8 text-center">
+            <div className="text-5xl mb-4">📧</div>
+            <h1 className="text-2xl font-bold text-gray-900 mb-2">Check your email</h1>
+            <p className="text-gray-500 text-sm mb-4">
+              We sent a confirmation link to <strong>{form.email}</strong>. Click the link to activate your account.
+            </p>
+            <p className="text-xs text-gray-400">Did not receive it? Check your spam folder.</p>
+          </div>
+        </div>
+      </div>
+    )
   }
 
   return (

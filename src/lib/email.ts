@@ -15,7 +15,7 @@ export async function sendWelcomeEmail(to: string, name: string) {
       <p>Your account on ProService Thailand is ready.</p>
       <p><a href="${APP_URL}">Go to ProService</a></p>
     `,
-  }).catch(console.error)
+  }).catch((err: Error) => { console.error('[email]', err.message) })
 }
 
 export async function sendNewProposalEmail(to: string, jobTitle: string, jobId: string) {
@@ -29,7 +29,7 @@ export async function sendNewProposalEmail(to: string, jobTitle: string, jobId: 
       <p>A professional has submitted a proposal for your job: <strong>${jobTitle}</strong></p>
       <p><a href="${APP_URL}/jobs/${jobId}">View proposals</a></p>
     `,
-  }).catch(console.error)
+  }).catch((err: Error) => { console.error('[email]', err.message) })
 }
 
 export async function sendProposalAcceptedEmail(to: string, jobTitle: string, jobId: string) {
@@ -43,7 +43,7 @@ export async function sendProposalAcceptedEmail(to: string, jobTitle: string, jo
       <p>The client has accepted your proposal for: <strong>${jobTitle}</strong></p>
       <p><a href="${APP_URL}/chat">Go to chat</a></p>
     `,
-  }).catch(console.error)
+  }).catch((err: Error) => { console.error('[email]', err.message) })
 }
 
 export async function sendNewMessageEmail(to: string, senderName: string, conversationId: string) {
@@ -57,7 +57,7 @@ export async function sendNewMessageEmail(to: string, senderName: string, conver
       <p><strong>${senderName}</strong> sent you a message on ProService.</p>
       <p><a href="${APP_URL}/chat?id=${conversationId}">Open chat</a></p>
     `,
-  }).catch(console.error)
+  }).catch((err: Error) => { console.error('[email]', err.message) })
 }
 
 export async function sendNewReviewEmail(to: string, rating: number, jobTitle: string) {
@@ -72,5 +72,5 @@ export async function sendNewReviewEmail(to: string, rating: number, jobTitle: s
       <p>Job: <strong>${jobTitle}</strong></p>
       <p><a href="${APP_URL}/dashboard/pro">View your reviews</a></p>
     `,
-  }).catch(console.error)
+  }).catch((err: Error) => { console.error('[email]', err.message) })
 }

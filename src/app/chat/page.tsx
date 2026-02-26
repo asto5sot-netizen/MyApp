@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next'
 import Navbar from '@/components/Navbar'
 import { Suspense } from 'react'
 import { createClient } from '@/lib/supabase/client'
+import { useLang } from '@/hooks/useLang'
 
 interface User { id: string; full_name: string; avatar_url?: string }
 interface Message {
@@ -20,7 +21,8 @@ interface Conversation {
 }
 
 function ChatContent() {
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
+  const lang = useLang()
   const router = useRouter()
   const searchParams = useSearchParams()
   const [currentUser, setCurrentUser] = useState<User & { id: string } | null>(null)
@@ -86,7 +88,7 @@ function ChatContent() {
 
   const getTranslated = (msg: Message) => {
     if (showOriginal[msg.id]) return msg.content
-    return msg.content_translated?.[i18n.language] || msg.content_translated?.['en'] || msg.content
+    return msg.content_translated?.[lang] || msg.content_translated?.['en'] || msg.content
   }
 
   const sendMessage = async (e: React.FormEvent) => {
@@ -188,7 +190,7 @@ function ChatContent() {
                             </div>
                             <div className="flex items-center gap-2 mt-1 px-1">
                               <span className="text-xs text-gray-400">{new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
-                              {msg.original_language !== i18n.language && (
+                              {msg.original_language !== lang && (
                                 <button
                                   onClick={() => setShowOriginal(prev => ({ ...prev, [msg.id]: !prev[msg.id] }))}
                                   className="text-xs text-blue-500 hover:underline"

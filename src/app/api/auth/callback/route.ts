@@ -33,22 +33,29 @@ export async function GET(request: NextRequest) {
     return NextResponse.redirect(`${origin}/auth/login?error=oauth`)
   }
 
-  // Ensure Profile exists for OAuth users (Google, etc.)
-  const profile = await prisma.profile.findUnique({ where: { id: data.user.id } })
+  // Ensure Profile exists — covers OAuth (Google) and email confirmation flows
+  let profile = await prisma.profile.findUnique({ where: { id: data.user.id } })
   if (!profile) {
-    await prisma.profile.create({
+    const meta = data.user.user_metadata ?? {}
+    const role = (meta.role as 'client' | 'pro' | 'admin') || 'client'
+    profile = await prisma.profile.create({
       data: {
         id: data.user.id,
         email: data.user.email!,
-        full_name: data.user.user_metadata?.full_name || data.user.email!.split('@')[0],
-        role: 'client',
-        avatar_url: data.user.user_metadata?.avatar_url || null,
+        full_name: meta.full_name || meta.name || data.user.email!.split('@')[0],
+        role,
+        avatar_url: meta.avatar_url || null,
+        city: meta.city || 'Bangkok',
+        phone: meta.phone || null,
+        preferred_language: meta.preferred_language || 'en',
       }
     })
+    if (role === 'pro') {
+      await prisma.proProfile.create({ data: { profile_id: profile.id } })
+    }
   }
 
   // Redirect to role-appropriate dashboard
-  const role = profile?.role || 'client'
-  const destination = role === 'admin' ? '/admin' : role === 'pro' ? '/dashboard/pro' : '/dashboard/client'
+  const destination = profile.role === 'admin' ? '/admin' : profile.role === 'pro' ? '/dashboard/pro' : '/dashboard/client'
   return NextResponse.redirect(`${origin}${destination}`)
 }
