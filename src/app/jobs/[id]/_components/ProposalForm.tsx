@@ -30,6 +30,7 @@ export function ProposalForm({ jobId, onSubmitted }: Props) {
       })
       const data = await res.json()
       if (!data.success) { setErr(data.error); return }
+      setForm({ message: '', price: '', price_type: 'fixed', estimated_days: '' })
       setShow(false)
       onSubmitted()
     } catch { setErr(t('common.error')) }

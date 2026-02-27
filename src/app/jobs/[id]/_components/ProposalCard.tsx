@@ -15,10 +15,10 @@ interface Props {
   isOwner: boolean
   jobStatus: string
   onAccept: (id: string) => void
-  t: (key: string) => string
 }
 
-export function ProposalCard({ proposal, isOwner, jobStatus, onAccept, t }: Props) {
+export function ProposalCard({ proposal, isOwner, jobStatus, onAccept }: Props) {
+  const { t } = useTranslation()
   return (
     <div className={`border rounded-xl p-4 ${proposal.status === 'accepted' ? 'border-green-300 bg-green-50' : 'border-gray-200'}`}>
       <div className="flex items-start justify-between mb-3">
@@ -35,7 +35,7 @@ export function ProposalCard({ proposal, isOwner, jobStatus, onAccept, t }: Prop
           </div>
         </Link>
         <div className="text-right">
-          <p className="font-bold text-gray-900">฿{proposal.price.toLocaleString()}</p>
+          <p className="font-bold text-gray-900">฿{Number(proposal.price).toLocaleString()}</p>
           <p className="text-xs text-gray-500">{proposal.price_type}</p>
         </div>
       </div>
@@ -51,7 +51,7 @@ export function ProposalCard({ proposal, isOwner, jobStatus, onAccept, t }: Prop
           </button>
         )}
         {proposal.status === 'accepted' && (
-          <span className="text-green-700 text-sm font-medium">✓ Accepted</span>
+          <span className="text-green-700 text-sm font-medium">✓ {t('proposals.status.accepted')}</span>
         )}
       </div>
     </div>

@@ -21,7 +21,10 @@ export const createJobSchema = z.object({
   district: z.string().optional(),
   city: z.string().default('Bangkok'),
   preferred_date: z.string().datetime().optional(),
-})
+}).refine(
+  data => !(data.budget_min && data.budget_max && data.budget_min > data.budget_max),
+  { message: 'budget_min must not exceed budget_max', path: ['budget_min'] }
+)
 
 // ── Proposals ───────────────────────────────────────────────────────────────
 

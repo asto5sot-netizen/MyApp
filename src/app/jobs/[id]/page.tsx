@@ -69,9 +69,9 @@ export default function JobPage() {
     const data = await res.json()
     if (data.success) {
       setJob(prev => prev ? { ...prev, status: 'done' } : prev)
-      toast.success('Job marked as completed!')
+      toast.success(t('jobs.status.done'))
     } else {
-      toast.error(data.error || 'Failed to update job')
+      toast.error(data.error || t('common.error'))
     }
   }
 
@@ -96,22 +96,20 @@ export default function JobPage() {
       {confirmProposalId && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
           <div className="bg-white rounded-2xl shadow-xl p-6 max-w-sm w-full">
-            <h3 className="text-lg font-bold text-gray-900 mb-2">Accept proposal?</h3>
-            <p className="text-sm text-gray-500 mb-6">
-              Other proposals will be declined and the job will move to In Progress.
-            </p>
+            <h3 className="text-lg font-bold text-gray-900 mb-2">{t('proposals.confirmTitle')}</h3>
+            <p className="text-sm text-gray-500 mb-6">{t('proposals.confirmBody')}</p>
             <div className="flex gap-3">
               <button
                 onClick={() => setConfirmProposalId(null)}
                 className="flex-1 border border-gray-200 text-gray-700 font-medium py-2.5 rounded-xl hover:bg-gray-50 transition-colors"
               >
-                Cancel
+                {t('common.cancel')}
               </button>
               <button
                 onClick={confirmAccept}
                 className="flex-1 bg-green-600 text-white font-bold py-2.5 rounded-xl hover:bg-green-700 transition-colors"
               >
-                Yes, Accept
+                {t('proposals.accept')}
               </button>
             </div>
           </div>
@@ -145,20 +143,20 @@ export default function JobPage() {
                 : <div className="space-y-4">
                     {job.proposals.map(p => (
                       <ProposalCard key={p.id} proposal={p} isOwner={isOwner}
-                        jobStatus={job.status} onAccept={acceptProposal} t={t} />
+                        jobStatus={job.status} onAccept={acceptProposal} />
                     ))}
                   </div>}
               {isOwner && conversationId && (
                 <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-xl flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-semibold text-green-800">Proposal accepted!</p>
-                    <p className="text-xs text-green-600">You can now chat with the professional</p>
+                    <p className="text-sm font-semibold text-green-800">{t('proposals.acceptedBanner')}</p>
+                    <p className="text-xs text-green-600">{t('proposals.chatDesc')}</p>
                   </div>
                   <Link
                     href={`/chat?id=${conversationId}`}
                     className="bg-green-600 text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-green-700 transition-colors"
                   >
-                    💬 Open chat
+                    💬 {t('proposals.openChat')}
                   </Link>
                 </div>
               )}
@@ -166,12 +164,12 @@ export default function JobPage() {
                 const accepted = job.proposals.find(p => p.status === 'accepted')
                 return accepted ? (
                   <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-xl flex items-center justify-between">
-                    <p className="text-sm font-semibold text-blue-800">Job is in progress</p>
+                    <p className="text-sm font-semibold text-blue-800">{t('proposals.inProgressBanner')}</p>
                     <Link
                       href="/chat"
                       className="bg-blue-600 text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
                     >
-                      💬 Go to chat
+                      💬 {t('proposals.goToChat')}
                     </Link>
                   </div>
                 ) : null
@@ -181,7 +179,7 @@ export default function JobPage() {
                   <ProposalForm jobId={id as string} onSubmitted={load} />
                 </div>
               )}
-              {hasProposed && <p className="mt-4 text-sm text-green-600">✓ You have already submitted a proposal</p>}
+              {hasProposed && <p className="mt-4 text-sm text-green-600">✓ {t('proposals.alreadySent')}</p>}
             </div>
           </div>
           <JobSidebar job={job} client={job.client} />

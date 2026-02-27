@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useTranslation } from 'react-i18next'
 import { LANGUAGES, STATIC_LINKS } from '@/config/navigation'
 import { useLanguageSwitch } from '@/hooks/useLanguageSwitch'
+import { NotificationBell } from './NotificationBell'
 import type { NavCategory, NavUser } from '@/types/navigation'
 
 interface Props {
@@ -79,13 +80,16 @@ export const MobileMenu = memo(function MobileMenu({ user, categories, getCatNam
       {/* Auth section */}
       {user ? (
         <>
-          <Link
-            href={user.role === 'client' ? '/dashboard/client' : '/dashboard/pro'}
-            onClick={onClose}
-            className="block py-2 text-gray-700"
-          >
-            {t('nav.dashboard')}
-          </Link>
+          <div className="flex items-center justify-between py-2">
+            <Link
+              href={user.role === 'client' ? '/dashboard/client' : '/dashboard/pro'}
+              onClick={onClose}
+              className="text-gray-700"
+            >
+              {t('nav.dashboard')}
+            </Link>
+            <NotificationBell />
+          </div>
           {user.role === 'client' && (
             <Link href="/jobs/create" onClick={onClose} className="block py-2 text-blue-600 font-medium">
               {t('nav.postJob')}

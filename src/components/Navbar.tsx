@@ -2,6 +2,7 @@
 
 import { memo, useCallback, useState } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { useTranslation } from 'react-i18next'
 import { useNavData } from '@/hooks/useNavData'
 import { useLang } from '@/hooks/useLang'
@@ -16,6 +17,7 @@ import type { NavCategory } from '@/types/navigation'
 
 export default memo(function Navbar() {
   const { t } = useTranslation()
+  const router = useRouter()
   const lang = useLang()
   const { user, setUser, categories } = useNavData()
   const [menuOpen, setMenuOpen] = useState(false)
@@ -29,8 +31,8 @@ export default memo(function Navbar() {
   const logout = useCallback(async () => {
     await fetch('/api/auth/logout', { method: 'POST' })
     setUser(null)
-    window.location.href = '/'
-  }, [setUser])
+    router.push('/')
+  }, [setUser, router])
 
   return (
     <nav className="bg-white shadow-sm border-b border-gray-100 sticky top-0 z-50">
