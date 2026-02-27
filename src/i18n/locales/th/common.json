@@ -76,7 +76,8 @@
     "placeholder": "พิมพ์ข้อความ...",
     "send": "ส่ง",
     "showOriginal": "แสดงต้นฉบับ",
-    "noConversations": "ยังไม่มีการสนทนา"
+    "noConversations": "ยังไม่มีการสนทนา",
+    "selectConversation": "เลือกการสนทนาเพื่อเริ่มแชท"
   },
   "auth": {
     "login": "เข้าสู่ระบบ",

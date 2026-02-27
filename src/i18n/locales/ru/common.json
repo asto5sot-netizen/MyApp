@@ -76,7 +76,8 @@
     "placeholder": "Написать сообщение...",
     "send": "Отправить",
     "showOriginal": "Показать оригинал",
-    "noConversations": "Диалогов пока нет"
+    "noConversations": "Диалогов пока нет",
+    "selectConversation": "Выберите диалог для начала общения"
   },
   "auth": {
     "login": "Вход",

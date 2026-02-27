@@ -7,6 +7,7 @@ import Navbar from '@/components/Navbar'
 import { Suspense } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useLang } from '@/hooks/useLang'
+import { toast } from '@/lib/toast'
 
 interface User { id: string; full_name: string; avatar_url?: string }
 interface Message {
@@ -109,6 +110,8 @@ function ChatContent() {
           return [...prev, data.data.message]
         })
         setNewMessage('')
+      } else {
+        toast.error(data.error || 'Failed to send message')
       }
     } finally { setSending(false) }
   }
@@ -228,7 +231,7 @@ function ChatContent() {
                 <div className="flex-1 flex items-center justify-center">
                   <div className="text-center text-gray-400">
                     <div className="text-4xl mb-3">💬</div>
-                    <p className="text-sm">Select a conversation to start chatting</p>
+                    <p className="text-sm">{t('chat.selectConversation')}</p>
                   </div>
                 </div>
               )}

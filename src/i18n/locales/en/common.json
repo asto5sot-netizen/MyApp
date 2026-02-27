@@ -76,7 +76,8 @@
     "placeholder": "Type a message...",
     "send": "Send",
     "showOriginal": "Show original",
-    "noConversations": "No conversations yet"
+    "noConversations": "No conversations yet",
+    "selectConversation": "Select a conversation to start chatting"
   },
   "auth": {
     "login": "Log In",

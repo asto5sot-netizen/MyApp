@@ -2,6 +2,7 @@ import { NextRequest } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { getAuthUser, unauthorizedResponse } from '@/lib/auth-middleware'
 import { successResponse, errorResponse, notFoundResponse } from '@/lib/api-response'
+import { notif } from '@/lib/notifications'
 
 export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -57,9 +58,25 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     return errorResponse('Invalid status')
   }
 
-  const updated = await prisma.job.update({
-    where: { id },
-    data: { status }
+  const updated = await prisma.$transaction(async (tx) => {
+    const updated = await tx.job.update({ where: { id }, data: { status } })
+
+    if (status === 'done' && job.status !== 'done') {
+      const accepted = await tx.proposal.findFirst({
+        where: { job_id: id, status: 'accepted' },
+      })
+      if (accepted) {
+        await tx.proProfile.update({
+          where: { profile_id: accepted.pro_id },
+          data: { completed_jobs: { increment: 1 } },
+        })
+        await tx.notification.create({
+          data: notif.jobAccepted(accepted.pro_id, job.title, id),
+        })
+      }
+    }
+
+    return updated
   })
 
   return successResponse({ job: updated })

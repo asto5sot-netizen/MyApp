@@ -11,6 +11,7 @@ import { CategoryDropdown } from './nav/CategoryDropdown'
 import { LanguageSwitcher } from './nav/LanguageSwitcher'
 import { UserMenu } from './nav/UserMenu'
 import { MobileMenu } from './nav/MobileMenu'
+import { NotificationBell } from './nav/NotificationBell'
 import type { NavCategory } from '@/types/navigation'
 
 export default memo(function Navbar() {
@@ -60,6 +61,7 @@ export default memo(function Navbar() {
             ))}
 
             <LanguageSwitcher />
+            {user && <NotificationBell />}
             <UserMenu user={user} onLogout={logout} />
           </div>
 

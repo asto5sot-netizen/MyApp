@@ -39,4 +39,12 @@ export const notif = {
     body: `Rating: ${rating}/5`,
     data: { job_id: jobId, review_id: reviewId },
   }),
+
+  jobAccepted: (userId: string, jobTitle: string, jobId: string) => ({
+    user_id: userId,
+    type: NotificationType.job_accepted,
+    title: 'Job marked as completed',
+    body: `Client confirmed completion of: "${jobTitle}"`,
+    data: { job_id: jobId },
+  }),
 }

@@ -1,5 +1,6 @@
 'use client'
 import { useTranslation } from 'react-i18next'
+import { StarRating } from '@/components/ui/StarRating'
 
 interface Review {
   id: string; rating: number; comment?: string; comment_translated?: Record<string, string>
@@ -25,14 +26,14 @@ export function ProReviewList({ reviews, getTranslated }: Props) {
             <div key={review.id} className="border-b border-gray-100 last:border-0 pb-4 last:pb-0">
               <div className="flex items-start gap-3">
                 <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 font-bold text-sm flex-shrink-0">
-                  {review.reviewer.full_name[0]}
+                  {review.reviewer.full_name?.[0] || '?'}
                 </div>
                 <div className="flex-1">
                   <div className="flex items-center justify-between">
                     <p className="font-medium text-gray-900 text-sm">{review.reviewer.full_name}</p>
-                    <div className="flex items-center gap-1">
-                      {'⭐'.repeat(review.rating)}
-                      <span className="text-xs text-gray-500 ml-1">{new Date(review.created_at).toLocaleDateString()}</span>
+                    <div className="flex items-center gap-2">
+                      <StarRating rating={review.rating} />
+                      <span className="text-xs text-gray-500">{new Date(review.created_at).toLocaleDateString()}</span>
                     </div>
                   </div>
                   {review.comment && (
