@@ -38,6 +38,9 @@ export async function POST(req: NextRequest) {
   const existing = await prisma.category.findUnique({ where: { slug: parsed.data.slug } })
   if (existing) return errorResponse('Slug already exists', 409)
 
+  const parent = await prisma.category.findUnique({ where: { id: parsed.data.parent_id } })
+  if (!parent) return errorResponse('Parent category not found', 404)
+
   const category = await prisma.category.create({ data: parsed.data })
   return successResponse({ category }, 201)
 }

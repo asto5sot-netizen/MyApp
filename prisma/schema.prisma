@@ -117,6 +117,7 @@ model Proposal {
   pro_id             String
   message            String
   message_translated Json?
+  original_language  String         @default("en")
   price              Decimal        @db.Decimal(10, 2)
   price_type         PriceType      @default(fixed)
   estimated_days     Int?

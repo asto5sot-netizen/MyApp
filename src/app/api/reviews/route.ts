@@ -24,6 +24,12 @@ export async function POST(req: NextRequest) {
     return errorResponse('Can only review completed jobs')
   }
 
+  // Ensure the pro actually had an accepted proposal for this job
+  const acceptedProposal = await prisma.proposal.findFirst({
+    where: { job_id, pro_id, status: 'accepted' }
+  })
+  if (!acceptedProposal) return errorResponse('This professional was not accepted for this job', 403)
+
   const existing = await prisma.review.findUnique({
     where: { job_id_reviewer_id: { job_id, reviewer_id: payload.userId } }
   })

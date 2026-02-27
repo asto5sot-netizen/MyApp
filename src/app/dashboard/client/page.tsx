@@ -5,12 +5,17 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { useTranslation } from 'react-i18next'
 import Navbar from '@/components/Navbar'
+import { toast } from '@/lib/toast'
 
 interface Job {
   id: string; title: string; status: string; proposals_count: number; city: string
   created_at: string; category: { name_en: string }
+  proposals: { pro_id: string }[]
 }
-interface Notification { id: string; title: string; body: string; is_read: boolean; created_at: string; type: string }
+interface Notification {
+  id: string; title: string; body: string; is_read: boolean; created_at: string; type: string
+  data?: { job_id?: string; conversation_id?: string }
+}
 
 export default function ClientDashboard() {
   const { t } = useTranslation()
@@ -32,7 +37,11 @@ export default function ClientDashboard() {
       }
       setUser(meData.data.user)
       if (jobsData.success) setJobs(jobsData.data.jobs)
-      if (notifData.success) setNotifications(notifData.data.notifications)
+      if (notifData.success) {
+        setNotifications(notifData.data.notifications)
+        const hasUnread = notifData.data.notifications.some((n: Notification) => !n.is_read)
+        if (hasUnread) fetch('/api/notifications', { method: 'PATCH' })
+      }
     }).finally(() => setLoading(false))
   }, [router])
 
@@ -44,6 +53,21 @@ export default function ClientDashboard() {
 
   const activeJobs = jobs.filter(j => j.status === 'open' || j.status === 'in_progress')
   const unreadCount = notifications.filter(n => !n.is_read).length
+
+  const markDone = async (jobId: string) => {
+    const res = await fetch(`/api/jobs/${jobId}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ status: 'done' }),
+    })
+    const data = await res.json()
+    if (data.success) {
+      setJobs(prev => prev.map(j => j.id === jobId ? { ...j, status: 'done' } : j))
+      toast.success('Job marked as completed!')
+    } else {
+      toast.error(data.error || 'Failed to update job')
+    }
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -90,30 +114,54 @@ export default function ClientDashboard() {
               </div>
             ) : (
               <div className="space-y-3">
-                {jobs.slice(0, 5).map(job => (
-                  <Link key={job.id} href={`/jobs/${job.id}`}>
-                    <div className="bg-white rounded-xl border border-gray-100 p-4 hover:shadow-md transition-shadow">
-                      <div className="flex items-start justify-between">
-                        <div className="flex-1 min-w-0">
-                          <p className="font-semibold text-gray-900 truncate">{job.title}</p>
-                          <p className="text-xs text-gray-500 mt-1">{job.category.name_en} · {job.city}</p>
+                {jobs.slice(0, 5).map(job => {
+                  const acceptedProId = job.proposals[0]?.pro_id
+                  const canReview = (job.status === 'in_progress' || job.status === 'done') && acceptedProId
+                  return (
+                    <div key={job.id} className="bg-white rounded-xl border border-gray-100 p-4 hover:shadow-md transition-shadow">
+                      <Link href={`/jobs/${job.id}`}>
+                        <div className="flex items-start justify-between">
+                          <div className="flex-1 min-w-0">
+                            <p className="font-semibold text-gray-900 truncate">{job.title}</p>
+                            <p className="text-xs text-gray-500 mt-1">{job.category.name_en} · {job.city}</p>
+                          </div>
+                          <div className="ml-3 flex-shrink-0 text-right">
+                            <span className={`text-xs font-medium px-2 py-1 rounded-full ${
+                              job.status === 'open' ? 'bg-green-100 text-green-700' :
+                              job.status === 'in_progress' ? 'bg-blue-100 text-blue-700' :
+                              'bg-gray-100 text-gray-600'
+                            }`}>
+                              {t(`jobs.status.${job.status}`)}
+                            </span>
+                            {job.proposals_count > 0 && (
+                              <p className="text-xs text-blue-600 mt-1 font-medium">{job.proposals_count} {t('jobs.proposals')}</p>
+                            )}
+                          </div>
                         </div>
-                        <div className="ml-3 flex-shrink-0 text-right">
-                          <span className={`text-xs font-medium px-2 py-1 rounded-full ${
-                            job.status === 'open' ? 'bg-green-100 text-green-700' :
-                            job.status === 'in_progress' ? 'bg-blue-100 text-blue-700' :
-                            'bg-gray-100 text-gray-600'
-                          }`}>
-                            {t(`jobs.status.${job.status}`)}
-                          </span>
-                          {job.proposals_count > 0 && (
-                            <p className="text-xs text-blue-600 mt-1 font-medium">{job.proposals_count} {t('jobs.proposals')}</p>
+                      </Link>
+                      {(job.status === 'in_progress' || canReview) && (
+                        <div className="mt-3 pt-3 border-t border-gray-100 flex flex-wrap gap-2">
+                          {job.status === 'in_progress' && (
+                            <button
+                              onClick={() => markDone(job.id)}
+                              className="inline-flex items-center gap-1.5 text-xs font-medium text-green-700 bg-green-50 border border-green-200 px-3 py-1.5 rounded-lg hover:bg-green-100 transition-colors"
+                            >
+                              ✓ Mark as Done
+                            </button>
+                          )}
+                          {canReview && (
+                            <Link
+                              href={`/pro/${acceptedProId}?review_job=${job.id}`}
+                              className="inline-flex items-center gap-1.5 text-xs font-medium text-yellow-700 bg-yellow-50 border border-yellow-200 px-3 py-1.5 rounded-lg hover:bg-yellow-100 transition-colors"
+                            >
+                              ⭐ Leave a review
+                            </Link>
                           )}
                         </div>
-                      </div>
+                      )}
                     </div>
-                  </Link>
-                ))}
+                  )
+                })}
               </div>
             )}
           </div>
@@ -127,13 +175,25 @@ export default function ClientDashboard() {
               </div>
             ) : (
               <div className="space-y-2">
-                {notifications.slice(0, 6).map(n => (
-                  <div key={n.id} className={`rounded-xl border p-3 ${n.is_read ? 'border-gray-100 bg-white' : 'border-blue-200 bg-blue-50'}`}>
-                    <p className="text-sm font-medium text-gray-900">{n.title}</p>
-                    <p className="text-xs text-gray-600 mt-0.5">{n.body}</p>
-                    <p className="text-xs text-gray-400 mt-1">{new Date(n.created_at).toLocaleString()}</p>
-                  </div>
-                ))}
+                {notifications.slice(0, 6).map(n => {
+                  const href = n.data?.conversation_id
+                    ? `/chat?id=${n.data.conversation_id}`
+                    : n.data?.job_id
+                    ? `/jobs/${n.data.job_id}`
+                    : null
+                  const inner = (
+                    <div className={`rounded-xl border p-3 transition-colors ${
+                      n.is_read ? 'border-gray-100 bg-white' : 'border-blue-200 bg-blue-50'
+                    } ${href ? 'hover:border-blue-300 cursor-pointer' : ''}`}>
+                      <p className="text-sm font-medium text-gray-900">{n.title}</p>
+                      <p className="text-xs text-gray-600 mt-0.5">{n.body}</p>
+                      <p className="text-xs text-gray-400 mt-1">{new Date(n.created_at).toLocaleString()}</p>
+                    </div>
+                  )
+                  return href
+                    ? <Link key={n.id} href={href}>{inner}</Link>
+                    : <div key={n.id}>{inner}</div>
+                })}
               </div>
             )}
           </div>

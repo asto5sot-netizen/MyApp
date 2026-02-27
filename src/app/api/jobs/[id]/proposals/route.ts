@@ -35,6 +35,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
         pro_id: payload.userId,
         message,
         message_translated: messageTranslated,
+        original_language: originalLanguage,
         ...rest,
       },
       include: {

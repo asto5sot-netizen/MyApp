@@ -2,6 +2,7 @@
 
 import { Suspense, useCallback, useEffect, useState } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
+import { RoleBadge } from '../_components/AdminBadges'
 
 interface UserRow {
   id: string
@@ -284,15 +285,3 @@ function UsersContent() {
   )
 }
 
-function RoleBadge({ role }: { role: string }) {
-  const colors: Record<string, string> = {
-    client: 'bg-blue-900 text-blue-300',
-    pro: 'bg-purple-900 text-purple-300',
-    admin: 'bg-red-900 text-red-300',
-  }
-  return (
-    <span className={`text-xs px-1.5 py-0.5 rounded font-medium ${colors[role] ?? 'bg-gray-800 text-gray-400'}`}>
-      {role}
-    </span>
-  )
-}

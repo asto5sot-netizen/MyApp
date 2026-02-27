@@ -6,41 +6,36 @@ export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url)
   const categorySlug = searchParams.get('category')
   const city = searchParams.get('city')
+  const minRating = parseFloat(searchParams.get('min_rating') || '0')
 
-  if (!categorySlug) return errorResponse('category is required', 400)
+  const where: Record<string, unknown> = { is_available: true }
 
-  const category = await prisma.category.findUnique({ where: { slug: categorySlug } })
-  if (!category) return errorResponse('Category not found', 404)
+  if (categorySlug) {
+    const category = await prisma.category.findUnique({ where: { slug: categorySlug } })
+    if (!category) return errorResponse('Category not found', 404)
 
-  // Find all category ids (parent + children if parent)
-  const childCategories = await prisma.category.findMany({ where: { parent_id: category.id } })
-  const categoryIds = [category.id, ...childCategories.map(c => c.id)]
-
-  const where: Record<string, unknown> = {
-    categories: { some: { category_id: { in: categoryIds } } },
-    is_available: true,
+    const childCategories = await prisma.category.findMany({ where: { parent_id: category.id } })
+    const categoryIds = [category.id, ...childCategories.map(c => c.id)]
+    where.categories = { some: { category_id: { in: categoryIds } } }
   }
+
   if (city) where.city = city
+  if (minRating > 0) where.rating = { gte: minRating }
 
   const pros = await prisma.proProfile.findMany({
     where,
     orderBy: { rating: 'desc' },
-    take: 50,
+    take: 60,
     include: {
       profile: {
-        select: {
-          id: true,
-          full_name: true,
-          avatar_url: true,
-          city: true,
-        }
+        select: { id: true, full_name: true, avatar_url: true, city: true }
       },
       categories: {
-        where: { category_id: { in: categoryIds } },
         include: { category: true },
+        take: 3,
       }
     }
   })
 
-  return successResponse({ category, pros })
+  return successResponse({ pros })
 }

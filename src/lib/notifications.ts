@@ -16,12 +16,12 @@ export const notif = {
     data: { conversation_id: conversationId },
   }),
 
-  proposalAccepted: (userId: string, jobTitle: string, jobId: string, proposalId: string) => ({
+  proposalAccepted: (userId: string, jobTitle: string, jobId: string, proposalId: string, conversationId: string) => ({
     user_id: userId,
     type: NotificationType.proposal_accepted,
     title: 'Your proposal was accepted!',
     body: `Client accepted your proposal for: "${jobTitle}"`,
-    data: { job_id: jobId, proposal_id: proposalId },
+    data: { job_id: jobId, proposal_id: proposalId, conversation_id: conversationId },
   }),
 
   newProposal: (userId: string, jobTitle: string, jobId: string) => ({

@@ -20,6 +20,7 @@ export async function GET(req: NextRequest) {
           completed_jobs: true, verification_status: true, is_available: true,
           whatsapp: true, telegram: true, line_id: true,
           facebook: true, instagram: true, tiktok: true, youtube: true, website: true,
+          categories: { include: { category: true } },
         }
       }
     }

@@ -1,7 +1,6 @@
 import { NextRequest } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { updateProfileSchema } from '@/lib/validation-schemas'
-import { redis } from '@/lib/redis'
 import { getAuthUser, unauthorizedResponse } from '@/lib/auth-middleware'
 import { translateToAllLanguages, detectLanguage } from '@/lib/translation'
 import { successResponse, errorResponse } from '@/lib/api-response'
@@ -22,16 +21,6 @@ export async function PATCH(req: NextRequest) {
   const userUpdate: Record<string, unknown> = {}
   if (full_name !== undefined) userUpdate.full_name = full_name
   if (phone !== undefined) {
-    // If phone is being changed, require OTP verification
-    const currentUser = await prisma.profile.findUnique({ where: { id: payload.userId }, select: { phone: true } })
-    if (currentUser?.phone !== phone) {
-      const normalized = phone.replace(/[\s\-()]/g, '').replace(/^00/, '+')
-      const verifiedKey = `phone_verified:${normalized}`
-      const isVerified = await redis.exists(verifiedKey)
-      if (!isVerified) return errorResponse('Phone number must be verified before saving', 422)
-      await redis.del(verifiedKey)
-      userUpdate.phone_verified = true
-    }
     userUpdate.phone = phone
   }
   if (preferred_language !== undefined) userUpdate.preferred_language = preferred_language

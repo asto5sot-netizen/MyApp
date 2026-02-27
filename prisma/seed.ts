@@ -5,7 +5,7 @@ import { Pool } from 'pg'
 import { createClient } from '@supabase/supabase-js'
 
 const pool = new Pool({
-  connectionString: process.env.DIRECT_URL,
+  connectionString: process.env.DATABASE_URL_UNPOOLED ?? process.env.DATABASE_URL,
   ssl: { rejectUnauthorized: false },
 })
 const adapter = new PrismaPg(pool)

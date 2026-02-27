@@ -11,7 +11,12 @@ export async function GET(req: NextRequest) {
     where: { client_id: payload.userId },
     include: {
       category: true,
-      _count: { select: { proposals: true } }
+      _count: { select: { proposals: true } },
+      proposals: {
+        where: { status: 'accepted' },
+        select: { pro_id: true },
+        take: 1,
+      },
     },
     orderBy: { created_at: 'desc' }
   })

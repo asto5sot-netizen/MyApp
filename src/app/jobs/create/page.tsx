@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { useTranslation } from 'react-i18next'
 import Navbar from '@/components/Navbar'
@@ -12,6 +12,7 @@ interface Category {
   name_en: string
   name_ru: string
   name_th: string
+  parent_id?: string
   children?: Category[]
 }
 
@@ -21,6 +22,17 @@ export default function CreateJobPage() {
   const [categories, setCategories] = useState<Category[]>([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [catSearch, setCatSearch] = useState('')
+  const [catOpen, setCatOpen] = useState(false)
+  const catRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (catRef.current && !catRef.current.contains(e.target as Node)) setCatOpen(false)
+    }
+    document.addEventListener('mousedown', handler)
+    return () => document.removeEventListener('mousedown', handler)
+  }, [])
   const [form, setForm] = useState({
     category_id: '',
     title: '',
@@ -46,8 +58,16 @@ export default function CreateJobPage() {
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setLoading(true)
     setError('')
+
+    if (form.budget_min && form.budget_max) {
+      if (parseFloat(form.budget_min) > parseFloat(form.budget_max)) {
+        setError('Minimum budget cannot be greater than maximum budget')
+        return
+      }
+    }
+
+    setLoading(true)
     try {
       const body: Record<string, unknown> = {
         category_id: form.category_id,
@@ -106,19 +126,52 @@ export default function CreateJobPage() {
         )}
 
         <form onSubmit={submit} className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 space-y-5">
-          <div>
+          <div ref={catRef} className="relative">
             <label className="block text-sm font-medium text-gray-700 mb-1">{t('jobs.category')} *</label>
-            <select
-              required
-              value={form.category_id}
-              onChange={e => setForm(f => ({ ...f, category_id: e.target.value }))}
-              className="w-full border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
+            <button
+              type="button"
+              onClick={() => setCatOpen(o => !o)}
+              className={`w-full text-left border rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                form.category_id ? 'text-gray-900 border-gray-200' : 'text-gray-400 border-gray-200'
+              }`}
             >
-              <option value="">Select a category...</option>
-              {allCategories.map(cat => (
-                <option key={cat.id} value={cat.id}>{getCategoryName(cat)}</option>
-              ))}
-            </select>
+              {form.category_id
+                ? allCategories.find(c => c.id === form.category_id) ? getCategoryName(allCategories.find(c => c.id === form.category_id)!) : 'Select a category...'
+                : 'Select a category...'}
+              <span className="float-right text-gray-400">▾</span>
+            </button>
+            {catOpen && (
+              <div className="absolute z-20 mt-1 w-full bg-white border border-gray-200 rounded-xl shadow-lg overflow-hidden">
+                <div className="p-2 border-b border-gray-100">
+                  <input
+                    type="text"
+                    autoFocus
+                    value={catSearch}
+                    onChange={e => setCatSearch(e.target.value)}
+                    placeholder="Search categories..."
+                    className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
+                  />
+                </div>
+                <div className="max-h-52 overflow-y-auto">
+                  {allCategories
+                    .filter(c => getCategoryName(c).toLowerCase().includes(catSearch.toLowerCase()))
+                    .map(cat => (
+                      <button
+                        key={cat.id}
+                        type="button"
+                        onClick={() => { setForm(f => ({ ...f, category_id: cat.id })); setCatOpen(false); setCatSearch('') }}
+                        className={`w-full text-left px-4 py-2.5 text-sm hover:bg-blue-50 transition-colors ${
+                          form.category_id === cat.id ? 'bg-blue-50 text-blue-700 font-medium' : 'text-gray-700'
+                        } ${cat.parent_id ? 'pl-8 text-gray-500' : 'font-medium'}`}
+                      >
+                        {cat.parent_id ? '↳ ' : ''}{getCategoryName(cat)}
+                      </button>
+                    ))}
+                </div>
+              </div>
+            )}
+            {/* Hidden required input for form validation */}
+            <input type="text" required value={form.category_id} onChange={() => {}} className="sr-only" tabIndex={-1} />
           </div>
 
           <div>

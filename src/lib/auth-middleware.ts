@@ -26,15 +26,23 @@ export async function getAuthUser(req: NextRequest, role?: string): Promise<Auth
 
   if (error || !user) return null
 
-  const profile = await prisma.profile.findUnique({
+  let profile = await prisma.profile.findUnique({
     where: { id: user.id },
-    select: { role: true },
+    select: { id: true, role: true },
   })
+
+  // Fallback: profile may exist with old ID (pre-Supabase-auth migration)
+  if (!profile && user.email) {
+    profile = await prisma.profile.findUnique({
+      where: { email: user.email },
+      select: { id: true, role: true },
+    })
+  }
 
   if (!profile) return null
   if (role && profile.role !== role) return null
 
-  return { userId: user.id, role: profile.role, email: user.email! }
+  return { userId: profile.id, role: profile.role, email: user.email! }
 }
 
 /**
@@ -48,14 +56,21 @@ export async function getAdminUser(): Promise<AuthPayload | null> {
 
   if (error || !user) return null
 
-  const profile = await prisma.profile.findUnique({
+  let profile = await prisma.profile.findUnique({
     where: { id: user.id },
-    select: { role: true },
+    select: { id: true, role: true },
   })
+
+  if (!profile && user.email) {
+    profile = await prisma.profile.findUnique({
+      where: { email: user.email },
+      select: { id: true, role: true },
+    })
+  }
 
   if (!profile || profile.role !== 'admin') return null
 
-  return { userId: user.id, role: profile.role, email: user.email! }
+  return { userId: profile.id, role: profile.role, email: user.email! }
 }
 
 export { unauthorizedResponse }

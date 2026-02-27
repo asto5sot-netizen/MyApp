@@ -5,6 +5,8 @@ import { successResponse, errorResponse, notFoundResponse } from '@/lib/api-resp
 
 export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
+  const payload = await getAuthUser(req)
+
   const job = await prisma.job.findUnique({
     where: { id },
     include: {
@@ -30,7 +32,13 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
   })
 
   if (!job) return notFoundResponse('Job')
-  return successResponse({ job })
+
+  // Only the job owner or admin can see proposals
+  const canSeeProposals = payload && (payload.userId === job.client_id || payload.role === 'admin')
+  const { proposals: _, ...jobWithoutProposals } = job
+  const jobData = canSeeProposals ? job : jobWithoutProposals
+
+  return successResponse({ job: jobData })
 }
 
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -55,4 +63,19 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   })
 
   return successResponse({ job: updated })
+}
+
+export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const payload = await getAuthUser(req)
+  if (!payload) return unauthorizedResponse()
+
+  const { id } = await params
+  const job = await prisma.job.findUnique({ where: { id } })
+  if (!job) return notFoundResponse('Job')
+  if (job.client_id !== payload.userId && payload.role !== 'admin') return unauthorizedResponse()
+
+  if (job.status !== 'open') return errorResponse('Only open jobs can be deleted')
+
+  await prisma.job.delete({ where: { id } })
+  return successResponse({ deleted: true })
 }
