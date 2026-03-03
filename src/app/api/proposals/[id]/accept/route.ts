@@ -22,6 +22,10 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   let conversationId: string
   try {
     const result = await prisma.$transaction(async (tx) => {
+      // Re-check inside transaction to prevent race condition (concurrent accepts)
+      const currentJob = await tx.job.findUnique({ where: { id: proposal.job_id }, select: { status: true } })
+      if (!currentJob || currentJob.status !== 'open') throw new Error('JOB_NOT_OPEN')
+
       await tx.proposal.update({ where: { id }, data: { status: 'accepted' } })
       await tx.proposal.updateMany({
         where: { job_id: proposal.job_id, id: { not: id } },
@@ -48,6 +52,9 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     })
     conversationId = result.id
   } catch (err) {
+    if (err instanceof Error && err.message === 'JOB_NOT_OPEN') {
+      return errorResponse('Job is no longer open', 409)
+    }
     console.error('[proposals/accept] transaction error:', err)
     return errorResponse('Failed to accept proposal', 500)
   }

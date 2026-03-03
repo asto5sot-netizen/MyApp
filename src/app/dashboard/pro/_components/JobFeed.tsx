@@ -24,14 +24,14 @@ export function JobFeed({ jobs }: Props) {
   return (
     <div>
       <div className="flex items-center justify-between mb-4 gap-2 flex-wrap">
-        <h2 className="text-lg font-bold text-gray-900">Available Jobs in Thailand</h2>
+        <h2 className="text-lg font-bold text-gray-900">{t('jobs.availableJobs')}</h2>
         {categories.length > 1 && (
           <select
             value={categoryFilter}
             onChange={e => setCategoryFilter(e.target.value)}
             className="text-sm border border-gray-200 rounded-lg px-3 py-1.5 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
-            <option value="">All categories</option>
+            <option value="">{t('jobs.allCategories')}</option>
             {categories.map(cat => (
               <option key={cat} value={cat}>{cat}</option>
             ))}
@@ -42,7 +42,7 @@ export function JobFeed({ jobs }: Props) {
       {filtered.length === 0 ? (
         <div className="bg-white rounded-2xl border border-gray-100 p-8 text-center">
           <p className="text-gray-400">
-            {categoryFilter ? `No jobs in "${categoryFilter}"` : 'No jobs available right now'}
+            {categoryFilter ? t('jobs.noJobsInCategory', { category: categoryFilter }) : t('jobs.noJobsAvailable')}
           </p>
         </div>
       ) : (

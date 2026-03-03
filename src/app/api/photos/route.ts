@@ -1,7 +1,13 @@
 import { NextRequest } from 'next/server'
+import { z } from 'zod'
 import { prisma } from '@/lib/prisma'
 import { getAuthUser, unauthorizedResponse } from '@/lib/auth-middleware'
 import { successResponse, errorResponse } from '@/lib/api-response'
+
+const photoSchema = z.object({
+  url: z.string().url('url must be a valid URL'),
+  caption: z.string().max(500).optional(),
+})
 
 export async function GET(req: NextRequest) {
   const payload = await getAuthUser(req, 'pro')
@@ -35,8 +41,9 @@ export async function POST(req: NextRequest) {
   if (count >= 12) return errorResponse('Maximum 12 photos allowed', 400)
 
   const body = await req.json()
-  const { url, caption } = body
-  if (!url) return errorResponse('url is required', 422)
+  const parsed = photoSchema.safeParse(body)
+  if (!parsed.success) return errorResponse(parsed.error.issues[0].message, 422)
+  const { url, caption } = parsed.data
 
   const photo = await prisma.proPhoto.create({
     data: { pro_id: proProfile.id, url, caption: caption || null, sort_order: count }

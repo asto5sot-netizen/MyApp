@@ -51,6 +51,15 @@
       "in_progress": "In Progress",
       "done": "Done",
       "cancelled": "Cancelled"
+    },
+    "availableJobs": "Available Jobs in Thailand",
+    "allCategories": "All categories",
+    "noJobsInCategory": "No jobs in \"{{category}}\"",
+    "noJobsAvailable": "No jobs available right now",
+    "timeline": {
+      "cancelled": "Job Cancelled",
+      "isFinished": "Is the job finished?",
+      "markDone": "Mark as Done"
     }
   },
   "proposals": {
@@ -100,7 +109,11 @@
     "noAccount": "Don't have an account?",
     "language": "Interface language",
     "loginBtn": "Log In",
-    "registerBtn": "Create Account"
+    "registerBtn": "Create Account",
+    "continueWithGoogle": "Continue with Google",
+    "continueWithFacebook": "Continue with Facebook",
+    "orWithEmail": "or with email",
+    "forgotPassword": "Forgot password?"
   },
   "profile": {
     "title": "My Profile",
@@ -113,6 +126,7 @@
     "rating": "Rating",
     "reviews": "reviews",
     "completedJobs": "Completed jobs",
+    "activeJobs": "Active jobs",
     "verified": "Verified",
     "categories": "My Services",
     "photos": "Portfolio Photos",

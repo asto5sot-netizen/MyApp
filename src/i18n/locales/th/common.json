@@ -51,6 +51,15 @@
       "in_progress": "กำลังดำเนินการ",
       "done": "เสร็จแล้ว",
       "cancelled": "ยกเลิก"
+    },
+    "availableJobs": "งานที่ว่างในประเทศไทย",
+    "allCategories": "ทุกหมวดหมู่",
+    "noJobsInCategory": "ไม่มีงานใน \"{{category}}\"",
+    "noJobsAvailable": "ยังไม่มีงานที่ว่าง",
+    "timeline": {
+      "cancelled": "งานถูกยกเลิก",
+      "isFinished": "งานเสร็จแล้วหรือยัง?",
+      "markDone": "ทำเครื่องหมายว่าเสร็จแล้ว"
     }
   },
   "proposals": {
@@ -100,7 +109,11 @@
     "noAccount": "ยังไม่มีบัญชี?",
     "language": "ภาษาที่ใช้",
     "loginBtn": "เข้าสู่ระบบ",
-    "registerBtn": "สร้างบัญชี"
+    "registerBtn": "สร้างบัญชี",
+    "continueWithGoogle": "เข้าสู่ระบบด้วย Google",
+    "continueWithFacebook": "เข้าสู่ระบบด้วย Facebook",
+    "orWithEmail": "หรือใช้อีเมล",
+    "forgotPassword": "ลืมรหัสผ่าน?"
   },
   "profile": {
     "title": "โปรไฟล์ของฉัน",
@@ -113,6 +126,7 @@
     "rating": "คะแนน",
     "reviews": "รีวิว",
     "completedJobs": "งานที่เสร็จแล้ว",
+    "activeJobs": "งานที่ดำเนินอยู่",
     "verified": "ยืนยันแล้ว",
     "categories": "บริการของฉัน",
     "photos": "ภาพผลงาน",

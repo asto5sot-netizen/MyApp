@@ -149,7 +149,7 @@ function ChatContent() {
                       >
                         <div className="flex items-center gap-3">
                           <div className="w-9 h-9 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-bold text-sm flex-shrink-0">
-                            {other.full_name[0]}
+                            {other.full_name?.[0] || '?'}
                           </div>
                           <div className="flex-1 min-w-0">
                             <p className="font-medium text-gray-900 text-sm truncate">{other.full_name}</p>
@@ -171,7 +171,7 @@ function ChatContent() {
                   {/* Header */}
                   <div className="p-4 border-b border-gray-100 flex items-center gap-3">
                     <div className="w-9 h-9 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-bold">
-                      {otherUser.full_name[0]}
+                      {otherUser.full_name?.[0] || '?'}
                     </div>
                     <div>
                       <p className="font-semibold text-gray-900 text-sm">{otherUser.full_name}</p>
@@ -245,7 +245,7 @@ function ChatContent() {
 
 export default function ChatPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-gray-50 flex items-center justify-center">Loading...</div>}>
+    <Suspense fallback={<div className="min-h-screen bg-gray-50" />}>
       <ChatContent />
     </Suspense>
   )

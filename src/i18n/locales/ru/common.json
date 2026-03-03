@@ -51,6 +51,15 @@
       "in_progress": "В работе",
       "done": "Выполнена",
       "cancelled": "Отменена"
+    },
+    "availableJobs": "Доступные заказы в Таиланде",
+    "allCategories": "Все категории",
+    "noJobsInCategory": "Нет заказов в \"{{category}}\"",
+    "noJobsAvailable": "Пока нет доступных заказов",
+    "timeline": {
+      "cancelled": "Заказ отменён",
+      "isFinished": "Работа завершена?",
+      "markDone": "Отметить выполненным"
     }
   },
   "proposals": {
@@ -100,7 +109,11 @@
     "noAccount": "Нет аккаунта?",
     "language": "Язык интерфейса",
     "loginBtn": "Войти",
-    "registerBtn": "Создать аккаунт"
+    "registerBtn": "Создать аккаунт",
+    "continueWithGoogle": "Войти через Google",
+    "continueWithFacebook": "Войти через Facebook",
+    "orWithEmail": "или через email",
+    "forgotPassword": "Забыли пароль?"
   },
   "profile": {
     "title": "Мой профиль",
@@ -113,6 +126,7 @@
     "rating": "Рейтинг",
     "reviews": "отзывов",
     "completedJobs": "Выполнено работ",
+    "activeJobs": "Активные заказы",
     "verified": "Верифицирован",
     "categories": "Мои услуги",
     "photos": "Фото работ",

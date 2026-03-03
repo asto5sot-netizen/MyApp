@@ -24,7 +24,7 @@ export function ProposalCard({ proposal, isOwner, jobStatus, onAccept }: Props) 
       <div className="flex items-start justify-between mb-3">
         <Link href={`/pro/${proposal.pro.id}`} className="flex items-center gap-3 hover:opacity-80">
           <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-bold">
-            {proposal.pro.full_name[0]}
+            {proposal.pro.full_name?.[0] || 'U'}
           </div>
           <div>
             <p className="font-semibold text-gray-900 text-sm">{proposal.pro.full_name}</p>

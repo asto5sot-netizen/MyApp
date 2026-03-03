@@ -153,17 +153,17 @@ function RegisterForm() {
             <button onClick={signInWithGoogle}
               className="w-full flex items-center justify-center gap-3 border border-gray-200 rounded-xl py-3 hover:bg-gray-50 transition-colors text-sm font-medium text-gray-700">
               <GoogleIcon />
-              Continue with Google
+              {t('auth.continueWithGoogle')}
             </button>
             <button onClick={signInWithFacebook}
               className="w-full flex items-center justify-center gap-3 border border-blue-200 rounded-xl py-3 hover:bg-blue-50 transition-colors text-sm font-medium text-blue-700">
               <FacebookIcon />
-              Continue with Facebook
+              {t('auth.continueWithFacebook')}
             </button>
           </div>
           <div className="relative mb-4">
             <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-gray-100"/></div>
-            <div className="relative flex justify-center"><span className="bg-white px-3 text-xs text-gray-400">or with email</span></div>
+            <div className="relative flex justify-center"><span className="bg-white px-3 text-xs text-gray-400">{t('auth.orWithEmail')}</span></div>
           </div>
 
           <div className="grid grid-cols-2 gap-3 mb-6">
@@ -295,7 +295,7 @@ function RegisterForm() {
 
 export default function RegisterPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-gray-50 flex items-center justify-center">Loading...</div>}>
+    <Suspense fallback={<div className="min-h-screen bg-gray-50" />}>
       <RegisterForm />
     </Suspense>
   )

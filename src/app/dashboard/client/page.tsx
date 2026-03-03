@@ -104,7 +104,7 @@ export default function ClientDashboard() {
           <div className="md:col-span-2">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-lg font-bold text-gray-900">{t('jobs.myJobs')}</h2>
-              <Link href="/jobs/my" className="text-sm text-blue-600 hover:underline">View all</Link>
+              <Link href="/jobs/create" className="text-sm text-blue-600 hover:underline">{t('jobs.createNew')}</Link>
             </div>
             {jobs.length === 0 ? (
               <div className="bg-white rounded-2xl border border-gray-100 p-8 text-center">

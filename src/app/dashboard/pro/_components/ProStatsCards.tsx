@@ -15,7 +15,7 @@ export function ProStatsCards({ rating, reviewsCount, completedJobs, activeJobs 
     { label: t('profile.rating'), value: rating?.toFixed(1) ?? '—', icon: '⭐' },
     { label: t('profile.reviews'), value: reviewsCount ?? 0, icon: '💬' },
     { label: t('profile.completedJobs'), value: completedJobs ?? 0, icon: '✅' },
-    { label: 'Active jobs', value: activeJobs, icon: '🔥' },
+    { label: t('profile.activeJobs'), value: activeJobs, icon: '🔥' },
   ]
 
   return (
