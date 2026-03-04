@@ -23,7 +23,7 @@ export function ProProfileCard({ pro, profile, getCatName }: Props) {
         <div className="w-20 h-20 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-bold text-3xl mx-auto mb-4">
           {pro.avatar_url
             ? <img src={pro.avatar_url} alt={pro.full_name} className="w-full h-full rounded-full object-cover" />
-            : pro.full_name[0]}
+            : (pro.full_name?.[0] || 'U')}
         </div>
         <h1 className="text-xl font-bold text-gray-900">{pro.full_name}</h1>
         <p className="text-gray-500 text-sm mt-1">{profile.city}</p>

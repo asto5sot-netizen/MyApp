@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { useTranslation } from 'react-i18next'
 import Navbar from '@/components/Navbar'
 import { THAI_CITIES, REGION_LABELS } from '@/lib/cities'
+import { useLang } from '@/hooks/useLang'
 
 interface Category {
   id: string
@@ -17,7 +18,8 @@ interface Category {
 }
 
 export default function CreateJobPage() {
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
+  const lang = useLang()
   const router = useRouter()
   const [categories, setCategories] = useState<Category[]>([])
   const [loading, setLoading] = useState(false)
@@ -51,10 +53,8 @@ export default function CreateJobPage() {
       .then(d => setCategories(d.data?.categories || []))
   }, [])
 
-  const getCategoryName = (cat: Category) => {
-    const lang = i18n.language
-    return lang === 'ru' ? cat.name_ru : lang === 'th' ? cat.name_th : cat.name_en
-  }
+  const getCategoryName = (cat: Category) =>
+    lang === 'ru' ? cat.name_ru : lang === 'th' ? cat.name_th : cat.name_en
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault()

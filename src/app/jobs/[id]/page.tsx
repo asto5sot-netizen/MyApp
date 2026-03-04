@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { useTranslation } from 'react-i18next'
 import Link from 'next/link'
+import { useLang } from '@/hooks/useLang'
 import Navbar from '@/components/Navbar'
 import { JobHeader } from './_components/JobHeader'
 import { ProposalCard, type ProposalData } from './_components/ProposalCard'
@@ -24,7 +25,8 @@ interface Job {
 
 export default function JobPage() {
   const { id } = useParams()
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
+  const lang = useLang()
   const router = useRouter()
   const [job, setJob] = useState<Job | null>(null)
   const [currentUser, setCurrentUser] = useState<{ id: string; role: string } | null>(null)
@@ -42,7 +44,7 @@ export default function JobPage() {
   useEffect(() => { load() }, [id])
 
   const getT = (map?: Record<string, string>, orig?: string) =>
-    map ? (map[i18n.language] || map['en'] || orig || '') : (orig || '')
+    map ? (map[lang] || map['en'] || orig || '') : (orig || '')
 
   const acceptProposal = async (proposalId: string) => {
     setConfirmProposalId(proposalId)
@@ -50,12 +52,20 @@ export default function JobPage() {
 
   const confirmAccept = async () => {
     if (!confirmProposalId) return
-    const res = await fetch(`/api/proposals/${confirmProposalId}/accept`, { method: 'POST' })
-    const data = await res.json()
-    setConfirmProposalId(null)
-    if (data.success) {
-      if (data.data?.conversation_id) setConversationId(data.data.conversation_id)
-      load()
+    try {
+      const res = await fetch(`/api/proposals/${confirmProposalId}/accept`, { method: 'POST' })
+      setConfirmProposalId(null)
+      if (!res.ok) { toast.error(t('common.error')); return }
+      const data = await res.json()
+      if (data.success) {
+        if (data.data?.conversation_id) setConversationId(data.data.conversation_id)
+        load()
+      } else {
+        toast.error(data.error || t('common.error'))
+      }
+    } catch {
+      setConfirmProposalId(null)
+      toast.error(t('common.error'))
     }
   }
 

@@ -54,7 +54,7 @@ export function JobSidebar({ job, client }: Props) {
         <h3 className="font-semibold text-gray-900 mb-3">Posted by</h3>
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 font-bold">
-            {client.full_name[0]}
+            {client.full_name?.[0] || '?'}
           </div>
           <div>
             <p className="font-medium text-gray-900 text-sm">{client.full_name}</p>

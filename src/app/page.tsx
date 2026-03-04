@@ -41,7 +41,7 @@ export default function HomePage() {
       const tree: (Category & { children?: Category[] })[] = d.data?.categories || []
       tree.forEach(c => { cats.push(c); c.children?.forEach(ch => cats.push(ch)) })
       setAllCategories(cats)
-    })
+    }).catch(() => {})
   }, [])
 
   const fetchJobs = useCallback(async () => {

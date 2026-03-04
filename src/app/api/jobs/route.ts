@@ -20,11 +20,18 @@ export async function POST(req: NextRequest) {
 
   const { title, description, preferred_date, ...rest } = parsed.data
 
-  const originalLanguage = await detectLanguage(title + ' ' + description)
-  const [titleTranslated, descTranslated] = await Promise.all([
-    translateToAllLanguages(title, originalLanguage),
-    translateToAllLanguages(description, originalLanguage),
-  ])
+  let originalLanguage = 'en'
+  let titleTranslated = {}
+  let descTranslated = {}
+  try {
+    originalLanguage = await detectLanguage(title + ' ' + description)
+    ;[titleTranslated, descTranslated] = await Promise.all([
+      translateToAllLanguages(title, originalLanguage),
+      translateToAllLanguages(description, originalLanguage),
+    ])
+  } catch {
+    // Translation unavailable — store raw text, translate later
+  }
 
   const job = await prisma.job.create({
     data: {

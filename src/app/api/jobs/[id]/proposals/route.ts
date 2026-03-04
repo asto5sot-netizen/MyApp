@@ -26,7 +26,15 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   if (!parsed.success) return errorResponse(parsed.error.issues[0].message, 422)
 
   const { message, ...rest } = parsed.data
-  const { originalLanguage, translated: messageTranslated } = await translateContent(message)
+  let originalLanguage = 'en'
+  let messageTranslated = {}
+  try {
+    const result = await translateContent(message)
+    originalLanguage = result.originalLanguage
+    messageTranslated = result.translated
+  } catch {
+    // Translation unavailable — store raw text
+  }
 
   const [proposal] = await prisma.$transaction([
     prisma.proposal.create({

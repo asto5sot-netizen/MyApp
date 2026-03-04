@@ -148,7 +148,7 @@ export default function ProsPage() {
                             <img src={pro.user.avatar_url} alt="" className="w-10 h-10 rounded-full object-cover" />
                           ) : (
                             <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold text-sm">
-                              {pro.user.full_name.charAt(0)}
+                              {pro.user.full_name?.charAt(0) || 'U'}
                             </div>
                           )}
                           {idx < 3 && (

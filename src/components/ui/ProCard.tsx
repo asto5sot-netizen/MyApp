@@ -21,7 +21,7 @@ export function ProCard({ id, fullName, avatarUrl, city, rating, reviewsCount, c
     <Link href={`/pro/${id}`}>
       <div className="bg-white rounded-2xl border border-gray-100 p-5 hover:shadow-md hover:-translate-y-0.5 transition-all flex items-center gap-4">
         <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-blue-400 to-violet-400 flex-shrink-0 flex items-center justify-center text-white font-bold text-lg overflow-hidden">
-          {avatarUrl ? <img src={avatarUrl} alt={fullName} className="w-full h-full object-cover" /> : fullName[0]}
+          {avatarUrl ? <img src={avatarUrl} alt={fullName} className="w-full h-full object-cover" /> : (fullName?.[0] || 'U')}
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-0.5">

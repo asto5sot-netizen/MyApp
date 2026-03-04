@@ -59,6 +59,7 @@ function ProsContent() {
     fetch('/api/categories?flat=true')
       .then(r => r.json())
       .then(d => { if (d.success) setCategories(d.data.categories) })
+      .catch(() => {})
   }, [])
 
   // Search pros whenever filters change
@@ -71,6 +72,7 @@ function ProsContent() {
     fetch(`/api/pros?${params}`)
       .then(r => r.json())
       .then(d => { if (d.success) setPros(d.data.pros) })
+      .catch(() => {})
       .finally(() => setLoading(false))
   }, [categorySlug, city, minRating])
 
