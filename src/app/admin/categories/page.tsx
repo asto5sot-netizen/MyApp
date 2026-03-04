@@ -131,12 +131,13 @@ export default function AdminCategoriesPage() {
             {/* Parent category header */}
             <div className="flex items-center justify-between px-5 py-4 border-b border-gray-800">
               <div className="flex items-center gap-3">
-                {cat.icon_url && <span className="text-xl">{cat.icon_url}</span>}
+                {cat.icon_url && <span className="text-xl" translate="no">{cat.icon_url}</span>}
                 <div>
-                  <span className="font-semibold text-white">{getName(cat, lang)}</span>
+                  <span className="font-semibold text-white" translate="no">{cat.name_en}</span>
+                  {cat.name_ru && <span className="text-xs text-gray-400 ml-2" translate="no">{cat.name_ru}</span>}
                 </div>
               </div>
-              <span className="text-xs text-gray-500 font-mono">{cat.slug}</span>
+              <span className="text-xs text-gray-500 font-mono" translate="no">{cat.slug}</span>
             </div>
 
             {/* Subcategories */}
@@ -189,11 +190,19 @@ export default function AdminCategoriesPage() {
                         </button>
 
                         <div className="min-w-0">
-                          <span className={`text-sm font-medium ${sub.is_active ? 'text-white' : 'text-gray-500 line-through'}`}>
-                            {getName(sub, lang)}
-                          </span>
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <span className={`text-sm font-medium ${sub.is_active ? 'text-white' : 'text-gray-500 line-through'}`} translate="no">
+                              {sub.name_en}
+                            </span>
+                            {sub.name_ru && (
+                              <span className="text-xs text-gray-400" translate="no">{sub.name_ru}</span>
+                            )}
+                            {sub.name_th && (
+                              <span className="text-xs text-gray-500" translate="no">{sub.name_th}</span>
+                            )}
+                          </div>
+                          <span className="text-[10px] text-gray-600 font-mono" translate="no">{sub.slug}</span>
                         </div>
-                        <span className="text-xs text-gray-600 font-mono flex-shrink-0">{sub.slug}</span>
                       </div>
 
                       <div className="flex items-center gap-2 flex-shrink-0 ml-3">
