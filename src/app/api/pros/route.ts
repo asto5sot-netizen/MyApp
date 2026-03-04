@@ -10,9 +10,12 @@ export async function GET(req: NextRequest) {
 
   const where: Record<string, unknown> = { is_available: true }
 
+  let foundCategory = null
+
   if (categorySlug) {
     const category = await prisma.category.findUnique({ where: { slug: categorySlug } })
     if (!category) return errorResponse('Category not found', 404)
+    foundCategory = category
 
     const childCategories = await prisma.category.findMany({ where: { parent_id: category.id } })
     const categoryIds = [category.id, ...childCategories.map(c => c.id)]
@@ -37,5 +40,5 @@ export async function GET(req: NextRequest) {
     }
   })
 
-  return successResponse({ pros })
+  return successResponse({ pros, category: foundCategory })
 }

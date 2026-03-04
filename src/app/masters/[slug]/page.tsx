@@ -18,7 +18,7 @@ interface Pro {
   city: string
   is_available: boolean
   verification_status: string
-  user: {
+  profile: {
     id: string
     full_name: string
     avatar_url: string | null
@@ -60,14 +60,19 @@ export default function ProsPage() {
 
   const fetchPros = async (cityFilter = '') => {
     setLoading(true)
-    const url = `/api/pros?category=${slug}${cityFilter ? `&city=${cityFilter}` : ''}`
-    const res = await fetch(url)
-    const data = await res.json()
-    if (data.success) {
-      setCategory(data.data.category)
-      setPros(data.data.pros)
+    try {
+      const url = `/api/pros?category=${slug}${cityFilter ? `&city=${cityFilter}` : ''}`
+      const res = await fetch(url)
+      const data = await res.json()
+      if (data.success) {
+        setCategory(data.data.category)
+        setPros(data.data.pros)
+      }
+    } catch {
+      // network error — keep existing state
+    } finally {
+      setLoading(false)
     }
-    setLoading(false)
   }
 
   useEffect(() => { fetchPros() }, [slug])
@@ -144,11 +149,11 @@ export default function ProsPage() {
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
                         <div className="relative">
-                          {pro.user.avatar_url ? (
-                            <img src={pro.user.avatar_url} alt="" className="w-10 h-10 rounded-full object-cover" />
+                          {pro.profile.avatar_url ? (
+                            <img src={pro.profile.avatar_url} alt="" className="w-10 h-10 rounded-full object-cover" />
                           ) : (
                             <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold text-sm">
-                              {pro.user.full_name?.charAt(0) || 'U'}
+                              {pro.profile.full_name?.charAt(0) || 'U'}
                             </div>
                           )}
                           {idx < 3 && (
@@ -158,7 +163,7 @@ export default function ProsPage() {
                           )}
                         </div>
                         <div>
-                          <p className="font-semibold text-gray-900 text-sm">{pro.user.full_name}</p>
+                          <p className="font-semibold text-gray-900 text-sm">{pro.profile.full_name}</p>
                           {pro.verification_status === 'verified' && (
                             <span className="text-[10px] text-blue-600 font-medium">✓ Verified</span>
                           )}
@@ -186,7 +191,7 @@ export default function ProsPage() {
                     </td>
                     <td className="px-4 py-4">
                       <Link
-                        href={`/pro/${pro.user.id}`}
+                        href={`/pro/${pro.profile.id}`}
                         className="text-blue-600 text-sm font-medium hover:underline whitespace-nowrap"
                       >
                         Profile →
